@@ -1,5 +1,8 @@
 package com.example.playmusic;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -27,6 +30,9 @@ public class PlayMusicService extends Service
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
+		// Display notification in the notification bar
+		createNotification();
+				
 		// Start playing music
 		mPlayer.start();
 		
@@ -51,10 +57,36 @@ public class PlayMusicService extends Service
 
 	public void onDestroy()
 	{
+		// Remove notification from the Notification bar.
+		mNotificationMgr.cancel(R.string.hello_world);
+				
 		// Stop playing music
 		mPlayer.stop();
 				
 		Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
+	}
+	
+	private NotificationManager mNotificationMgr;
+	private void createNotification()
+	{
+		// Prepare intent which is triggered if the notification is clicked.
+		Intent intent = new Intent(this, MainActivity.class);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0 /* requestCode */, intent,
+				Notification.FLAG_ONGOING_EVENT);
+
+		// Build notification
+		Notification notification = new Notification.Builder(this)
+				.setContentTitle("PlayMusicService")
+				.setContentText("Tap to go to application & stop the service.")
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setContentIntent(contentIntent)
+				.build();
+		
+		notification.flags = notification.flags | Notification.FLAG_ONGOING_EVENT;
+
+		// Display the notification
+		mNotificationMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		mNotificationMgr.notify(R.string.hello_world, notification);
 	}
 
 }

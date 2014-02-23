@@ -1,6 +1,7 @@
 package com.example.playmusic;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -79,6 +80,8 @@ public class MainActivity extends Activity
 		}
 	}
 
+	private NotificationManager mNotificationMgr;
+	
 	void doBindService()
 	{
 		mIsBound = true;
